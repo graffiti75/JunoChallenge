@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.model.Repo
+import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
 import br.cericatto.junochallenge.view.activity.MainActivity
+import kotlinx.android.synthetic.main.item_repo.view.*
 import timber.log.Timber
 
 /**
@@ -16,7 +18,7 @@ import timber.log.Timber
  * @author Rodrigo Cericatto
  * @since December 14, 2019
  */
-class RepoAdapter(activity: MainActivity /* , presenter : MainPresenterImpl */)
+class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
     : RecyclerView.Adapter<RepoAdapter.RepoViewHolder>() {
 
     //--------------------------------------------------
@@ -24,7 +26,7 @@ class RepoAdapter(activity: MainActivity /* , presenter : MainPresenterImpl */)
     //--------------------------------------------------
 
     private val mActivity = activity
-//    private val mPresenter = presenter
+    private val mPresenter = presenter
     private var mRepoList: MutableList<Repo> = ArrayList()
 
     //--------------------------------------------------
@@ -49,7 +51,7 @@ class RepoAdapter(activity: MainActivity /* , presenter : MainPresenterImpl */)
     // Callback
     //--------------------------------------------------
 
-    fun updateAdapter(list: MutableList<Repo>) {
+    fun updateAdapter(list: List<Repo>) {
         val newList = mRepoList
         newList.addAll(list)
         mRepoList = newList
@@ -70,16 +72,16 @@ class RepoAdapter(activity: MainActivity /* , presenter : MainPresenterImpl */)
         if (!loadedAllData && shouldPaginate) {
             app.page = page + 1
             Timber.d("page: $page")
-//            mPresenter.initDataSet()
+            mPresenter.initDataSet()
         }
     }
 
     private fun setTitle(view: View, repo: Repo) {
-//        view.id_item_repo__title_text_view.text = repo.name
-//        view.id_item_repo__title_text_view.setOnClickListener {
+        view.id_item_repo__title_text_view.text = repo.name
+        view.id_item_repo__title_text_view.setOnClickListener {
 //            mActivity.openActivityExtra(mActivity, DetailActivity::class.java,
 //                AppConfiguration.REPO_NAME_EXTRA, repo.name)
-//        }
+        }
     }
 
     //--------------------------------------------------

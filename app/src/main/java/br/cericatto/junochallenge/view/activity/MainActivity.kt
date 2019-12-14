@@ -1,8 +1,16 @@
 package br.cericatto.junochallenge.view.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import br.cericatto.junochallenge.R
+import br.cericatto.junochallenge.presenter.api.ApiService
+import br.cericatto.junochallenge.presenter.di.component.DaggerMainComponent
+import br.cericatto.junochallenge.presenter.di.extensions.checkIfHasNetwork
+import br.cericatto.junochallenge.presenter.di.extensions.showToast
+import br.cericatto.junochallenge.presenter.di.module.MainModule
+import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
+import br.cericatto.junochallenge.view.activity.base.BaseActivity
+import javax.inject.Inject
 
 /**
  * MainActivity.kt.
@@ -10,10 +18,63 @@ import br.cericatto.junochallenge.R
  * @author Rodrigo Cericatto
  * @since December 14, 2019
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
+    //--------------------------------------------------
+    // Attributes
+    //--------------------------------------------------
+
+    @Inject
+    lateinit var mPresenter: MainPresenterImpl
+
+    @Inject
+    lateinit var mApiService: ApiService
+
+    //--------------------------------------------------
+    // Base Activity
+    //--------------------------------------------------
+
+    override val contentView: Int
+        get() = R.layout.activity_main
+
+    override fun onViewReady(savedInstanceState: Bundle?, intent: Intent) {
+        setContentView(contentView)
+        super.onViewReady(savedInstanceState, intent)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun resolveDaggerDependency() {
+        DaggerMainComponent.builder()
+            .applicationComponent(applicationComponent)
+            .mainModule(MainModule(this))
+            .build().inject(this)
+    }
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+    }
+
+    //--------------------------------------------------
+    // Activity Lifecycle
+    //--------------------------------------------------
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setCustomToolbar(false, getString(R.string.activity_main))
+        getData()
+    }
+
+    //--------------------------------------------------
+    // Methods
+    //--------------------------------------------------
+
+    private fun getData() {
+        if (checkIfHasNetwork()) {
+            mPresenter.initRecyclerView()
+            mPresenter.initDataSet(this, mApiService)
+        } else {
+            showToast(R.string.no_internet)
+            finish()
+        }
     }
 }

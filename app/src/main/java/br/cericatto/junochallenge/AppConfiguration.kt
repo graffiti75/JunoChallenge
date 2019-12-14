@@ -4,7 +4,7 @@ package br.cericatto.junochallenge
  * AppConfiguration.kt.
  *
  * @author Rodrigo Cericatto
- * @since September 26, 2019
+ * @since December 14, 2019
  */
 object AppConfiguration {
 
@@ -13,7 +13,6 @@ object AppConfiguration {
     //----------------------------------------------
 
     const val BASE_URL = "https://api.github.com"
-    const val BASE_QRCODE_URL = "https://github.com"
     const val COMMITS_NUMBER = 5
 
     const val PAGE = 1
@@ -31,6 +30,6 @@ object AppConfiguration {
     //----------------------------------------------
 
     const val REPO_NAME_EXTRA = "repo_name_extra"
-    const val QRCODE_LOGIN_EXTRA = "qrcode_login_extra"
+    const val QRCODE_LOGIN_EXTRA: String = "qrcode_login_extra"
     const val USER_PASSWORD_EXTRA = "user_password_extra"
 }
