@@ -1,19 +1,21 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion COMPILE_SDK_VERSION as int
     defaultConfig {
-        applicationId "br.cericatto.junochallenge"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        applicationId APPLICATION_ID
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
+        versionCode VERSION_CODE as int
+        versionName VERSION_NAME
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildTypes {
         release {
@@ -21,15 +23,60 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    // Kotlin.
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
+
+    // Support.
+    implementation "androidx.appcompat:appcompat:$ANDROIDX_VERSION"
+    implementation "androidx.constraintlayout:constraintlayout:$CONSTRAINT_LAYOUT_VERSION"
+    implementation "androidx.recyclerview:recyclerview:$ANDROIDX_VERSION"
+    implementation "androidx.cardview:cardview:$CARD_VIEW_VERSION"
+    implementation "com.google.android.material:material:$MATERIAL_VERSION"
+
+    // Dagger.
+    compileOnly "javax.annotation:jsr250-api:$JSR_VERSION"
+    implementation "com.google.dagger:dagger:$DAGGER_VERSION"
+    kapt "com.google.dagger:dagger-compiler:$DAGGER_COMPILER_VERSION"
+
+    // RX.
+    implementation "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
+    implementation "io.reactivex.rxjava2:rxkotlin:$RX_KOTLIN_VERSION"
+    implementation "io.reactivex.rxjava2:rxjava:$RX_JAVA_VERSION"
+
+    // RxJava2
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$ADAPTER_RX_JAVA_VERSION"
+    implementation "com.jakewharton.rxbinding:rxbinding:$RX_BINDING_VERSION"
+    implementation "com.squareup.okhttp3:logging-interceptor:$LOGGING_INTERCEPTOR_VERSION"
+
+    // Retrofit.
+    implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:converter-moshi:$MOSHI_VERSION"
+    implementation "com.squareup.okhttp3:okhttp:$OKHTTP_VERSION"
+
+    // Logging.
+    implementation "com.jakewharton.timber:timber:$TIMBER_VERSION"
+
+    // Google Vision.
+    implementation "com.google.android.gms:play-services:$GMS_PLAY_SERVICES_VERSION"
+    implementation "com.dlazaro66.qrcodereaderview:qrcodereaderview:$QRCODE_VIEWER_VERSION"
+
+    // Tests.
+    testImplementation "junit:junit:$JUNIT_VERSION"
+    androidTestImplementation "androidx.test:runner:$TEST_RUNNER_VERSION"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$ESPRESSO_CORE_VERSION"
+    androidTestImplementation "androidx.test:rules:$TEST_RULES_VERSION"
+    androidTestImplementation "com.jakewharton.espresso:okhttp3-idling-resource:$OKHTTP_IDLING_RESOURCE_VERSION"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$OKHTTP_MOCK_WEB_SERVER"
+    androidTestImplementation "androidx.test.ext:junit:$JUNIT_EXT"
 }
