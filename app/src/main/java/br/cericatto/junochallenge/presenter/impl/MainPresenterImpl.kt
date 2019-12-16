@@ -1,7 +1,13 @@
 package br.cericatto.junochallenge.presenter.impl
 
+import android.app.SearchManager
+import android.content.Context
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.model.Repo
@@ -30,7 +36,9 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     //--------------------------------------------------
 
     private lateinit var mAdapter: RepoAdapter
-    private lateinit var mService : ApiService
+    private lateinit var mService: ApiService
+    private lateinit var mRepos: List<Repo>
+    private lateinit var mQuery: String
 
     //--------------------------------------------------
     // Override Methods
@@ -42,14 +50,14 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         mActivity.id_activity_main__recycler_view.layoutManager = LinearLayoutManager(mActivity)
     }
 
-    override fun initDataSet(context: MainActivity, service : ApiService) {
+    override fun initDataSet(context: MainActivity, service: ApiService, query: String) {
         val app: MainApplication = context.application as MainApplication
         val page = app.page
         if (page == 1) {
             mService = service
         }
 
-        val observable = service.getRepos()
+        val observable = service.getRepos(query = query)
         val subscription = observable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -88,12 +96,55 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         Timber.e(error)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu) {
+        val menuInflater = mActivity.menuInflater
+        menuInflater.inflate(R.menu.dashboard, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchManager = mActivity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        var searchView = setSearchView(searchItem, searchManager)
+        searchViewListener(searchView, searchItem)
+    }
+
+    override fun setSearchView(searchItem: MenuItem, searchManager: SearchManager): SearchView? {
+        var searchView: SearchView? = null
+        if (searchItem != null) {
+            searchView = searchItem!!.actionView as SearchView
+        }
+        if (searchView != null) {
+            searchView?.setSearchableInfo(searchManager.getSearchableInfo(mActivity.componentName))
+        }
+        return searchView
+    }
+
+    override fun searchViewListener(searchView: SearchView?, searchItem: MenuItem) {
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                mActivity.id_activity_main__loading.visibility = View.VISIBLE
+                mActivity.id_activity_main__default_text.visibility = View.GONE
+
+                if (!searchView?.isIconified) {
+                    searchView?.isIconified = true
+                }
+                searchItem.collapseActionView()
+
+                mQuery = query
+                mActivity.getData(query)
+                return false
+            }
+
+            override fun onQueryTextChange(s: String): Boolean {
+                return false
+            }
+        })
+    }
+
+
     //--------------------------------------------------
     // Public Methods
     //--------------------------------------------------
 
     fun initDataSet() {
-        initDataSet(mActivity, mService)
+        initDataSet(mActivity, mService, mQuery)
     }
 
     fun callLoading() {
@@ -108,6 +159,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         mActivity.id_activity_main__loading.visibility = View.GONE
         mActivity.id_activity_main__recycler_view.visibility = View.VISIBLE
 
+        mRepos = repos
         mAdapter.updateAdapter(repos)
     }
 

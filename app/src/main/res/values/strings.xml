@@ -8,11 +8,18 @@
     <string name="activity_retrofit">Retrofit Test</string>
     <string name="activity_user">User Test</string>
 
+    <string name="activity_main_default_text">Choose some repo clicking into the search box at the Toolbar above</string>
+
     <!-- Errors -->
 
     <string name="error_loading_user">Error loading User.</string>
     <string name="empty_commits">This repository does not contains commits.</string>
     <string name="no_internet">No network connection. Please try again later.</string>
+
+    <!-- Menu -->
+
+    <string name="search">Search</string>
+    <string name="search_hint">Type repo name</string>
 
     <!-- Layout -->
 

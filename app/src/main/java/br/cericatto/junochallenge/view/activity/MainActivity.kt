@@ -2,6 +2,9 @@ package br.cericatto.junochallenge.view.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.presenter.api.ApiService
 import br.cericatto.junochallenge.presenter.di.component.DaggerMainComponent
@@ -61,17 +64,25 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setCustomToolbar(false, getString(R.string.activity_main))
-        getData()
+    }
+
+    //--------------------------------------------------
+    // Menu
+    //--------------------------------------------------
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        mPresenter.onCreateOptionsMenu(menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     //--------------------------------------------------
     // Methods
     //--------------------------------------------------
 
-    private fun getData() {
+    fun getData(query: String) {
         if (checkIfHasNetwork()) {
             mPresenter.initRecyclerView()
-            mPresenter.initDataSet(this, mApiService)
+            mPresenter.initDataSet(this, mApiService, query)
         } else {
             showToast(R.string.no_internet)
             finish()
