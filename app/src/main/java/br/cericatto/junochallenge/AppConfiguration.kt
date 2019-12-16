@@ -18,12 +18,9 @@ object AppConfiguration {
     const val PAGE = 1
     const val ITEMS_PER_PAGE = 30
 
+    const val TEST_GITHUB_FORKS = "2525"
     const val TEST_GITHUB_USER = "octocat"
     const val TEST_PUBLIC_REPOS = 8
-
-    // TODO: Just a reminder -> For safety reasons, not hardcoded values.
-    const val TEST_LOGIN = "<>"
-    const val TEST_PASSWORD = "<>"
 
     //----------------------------------------------
     // Extras

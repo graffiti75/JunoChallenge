@@ -25,12 +25,20 @@
 
         <!-- App Activity's -->
 
-        <activity android:name=".view.activity.MainActivity"
+        <activity android:name=".view.activity.test.RetrofitActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Test Activity's -->
+
+        <activity android:name=".view.activity.MainActivity"
+            android:label="@string/activity_retrofit" />
+
+        <activity android:name=".view.activity.test.UserActivity"
+            android:label="@string/activity_user" />
     </application>
 </manifest>

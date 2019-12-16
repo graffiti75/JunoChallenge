@@ -4,7 +4,9 @@
     <!-- Activity's -->
 
     <string name="activity_login">User Password</string>
-    <string name="activity_main">Juno Android Test</string>
+    <string name="activity_main">Juno Android</string>
+    <string name="activity_retrofit">Retrofit Test</string>
+    <string name="activity_user">User Test</string>
 
     <!-- Errors -->
 
