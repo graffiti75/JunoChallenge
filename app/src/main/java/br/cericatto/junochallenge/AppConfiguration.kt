@@ -13,7 +13,6 @@ object AppConfiguration {
     //----------------------------------------------
 
     const val BASE_URL = "https://api.github.com"
-    const val DEFAULT_SEARCH = "android"
 
     const val PAGE = 1
     const val ITEMS_PER_PAGE = 30
@@ -26,7 +25,5 @@ object AppConfiguration {
     // Extras
     //----------------------------------------------
 
-    const val REPO_NAME_EXTRA = "repo_name_extra"
-    const val QRCODE_LOGIN_EXTRA: String = "qrcode_login_extra"
-    const val USER_PASSWORD_EXTRA = "user_password_extra"
+    const val REPO_ID_POSITION_EXTRA = "repo_id_position_extra"
 }

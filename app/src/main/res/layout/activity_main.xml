@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             tools:itemCount="5"
-            tools:listitem="@layout/item_repo_main" />
+            tools:listitem="@layout/item_repo" />
 
         <include
             android:id="@+id/id_activity_main__loading"

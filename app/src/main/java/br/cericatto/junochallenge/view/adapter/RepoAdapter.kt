@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
-import br.cericatto.junochallenge.model.Repo
+import br.cericatto.junochallenge.presenter.di.extensions.openActivityExtra
 import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
+import br.cericatto.junochallenge.view.activity.DetailActivity
 import br.cericatto.junochallenge.view.activity.MainActivity
-import kotlinx.android.synthetic.main.item_repo_main.view.*
+import kotlinx.android.synthetic.main.item_repo.view.*
 import timber.log.Timber
 
 /**
@@ -35,13 +37,13 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return RepoViewHolder(inflater.inflate(R.layout.item_repo_main, parent, false))
+        return RepoViewHolder(inflater.inflate(R.layout.item_repo, parent, false))
     }
 
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
         var repo = mRepoList[position]
         var view = holder.itemView
-        setTitle(view, repo)
+        setTitle(view, repo, position)
         checkPagination(position)
     }
 
@@ -76,11 +78,11 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
         }
     }
 
-    private fun setTitle(view: View, repoName: String) {
+    private fun setTitle(view: View, repoName: String, position: Int) {
         view.id_item_repo__title_text_view.text = repoName
         view.id_item_repo__title_text_view.setOnClickListener {
-//            mActivity.openActivityExtra(mActivity, DetailActivity::class.java,
-//                AppConfiguration.REPO_NAME_EXTRA, repo.name)
+            mActivity.openActivityExtra(mActivity, DetailActivity::class.java,
+                AppConfiguration.REPO_ID_POSITION_EXTRA, position)
         }
     }
 

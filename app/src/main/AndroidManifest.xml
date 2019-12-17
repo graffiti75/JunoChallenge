@@ -44,6 +44,8 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity android:name=".view.activity.DetailActivity" />
+
         <!-- Test Activity's -->
 
         <activity android:name=".view.activity.test.RetrofitActivity"

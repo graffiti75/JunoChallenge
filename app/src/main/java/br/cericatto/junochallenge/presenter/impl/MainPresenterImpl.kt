@@ -7,10 +7,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
-import br.cericatto.junochallenge.model.Repo
+import br.cericatto.junochallenge.model.Search
 import br.cericatto.junochallenge.presenter.MainPresenter
 import br.cericatto.junochallenge.presenter.api.ApiService
 import br.cericatto.junochallenge.presenter.di.extensions.showToast
@@ -63,23 +62,12 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    val items = it?.items ?: emptyList()
-                    val itemsName : MutableList<String> = mutableListOf()
-                    items.forEach {
-                        itemsName.add(it.name)
-                    }
-                    if (items.isNotEmpty()) {
-                        showData(itemsName)
-                        Timber.i("getRepos() -> $items")
-                    } else {
-                        app.loadedAllData = true
-                    }
+                    loadDataOnSuccess(it, app)
                 },
                 {
                     it.message?.let { errorMessage ->
                         showErrorMessage(errorMessage)
                         context.showToast(context.getString(R.string.retrofit_error))
-                        backToLoginScreen(context)
                     }
                 },
                 // OnCompleted
@@ -151,13 +139,24 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         initDataSet(mActivity, mService, mQuery)
     }
 
-    fun callLoading() {
-        mActivity.id_activity_main__loading.visibility = View.VISIBLE
-    }
-
     //--------------------------------------------------
     // Private Methods
     //--------------------------------------------------
+
+    private fun loadDataOnSuccess(search: Search?, app: MainApplication) {
+        val items = search?.items ?: emptyList()
+        MainApplication.repoList.addAll(items)
+        val itemsName : MutableList<String> = mutableListOf()
+        items.forEach {
+            itemsName.add(it.name)
+        }
+        if (items.isNotEmpty()) {
+            showData(itemsName)
+            Timber.i("getRepos() -> $items")
+        } else {
+            app.loadedAllData = true
+        }
+    }
 
     private fun updateAdapter(repos: List<String>) {
         mActivity.id_activity_main__loading.visibility = View.GONE
@@ -165,9 +164,5 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
 
         mRepos = repos
         mAdapter.updateAdapter(repos)
-    }
-
-    private fun backToLoginScreen(context: MainActivity) {
-//        context.openActivity(context, LoginActivity::class.java)
     }
 }

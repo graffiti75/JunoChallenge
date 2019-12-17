@@ -1,6 +1,7 @@
 package br.cericatto.junochallenge
 
 import android.app.Application
+import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.presenter.di.component.ApplicationComponent
 import br.cericatto.junochallenge.presenter.di.component.DaggerApplicationComponent
 import br.cericatto.junochallenge.presenter.di.module.ApplicationModule
@@ -19,6 +20,10 @@ open class MainApplication : Application() {
 
     var page: Int = 1
     var loadedAllData: Boolean = false
+
+    companion object {
+        var repoList : MutableList<Repo> = mutableListOf()
+    }
 
     override fun onCreate() {
         super.onCreate()

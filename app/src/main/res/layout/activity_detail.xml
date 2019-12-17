@@ -11,34 +11,228 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/id_activity_detail__recycler_view"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="5"
-        tools:listitem="@layout/item_repo_details"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/id_activity_detail__empty_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:textColor="@color/black"
-        android:text="@string/empty_commits"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:typeface="monospace"
-        android:visibility="gone" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_800_transparent_60"
+            android:orientation="vertical">
 
-    <include
-        android:id="@+id/id_activity_detail__loading"
-        layout="@layout/loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:elevation="20dp"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey_800_transparent_35">
+
+                    <!-- Repo Id -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__id_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__id"
+                        android:typeface="monospace"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__id_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__id_label_text_view"
+                        tools:text="@string/activity_details__id__hint" />
+
+                    <!-- Repo Node Id -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__node_id_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__node_id"
+                        android:typeface="monospace"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__id_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__node_id_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__node_id_label_text_view"
+                        tools:text="@string/activity_details__node_id__hint" />
+
+                    <!-- Repo Name -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__name_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__name"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__node_id_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__name_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__name_label_text_view"
+                        tools:text="@string/activity_details__name__hint" />
+
+                    <!-- Full Name -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__full_name_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__full_name"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__name_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__full_name_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__full_name_label_text_view"
+                        tools:text="@string/activity_details__full_name__hint" />
+
+                    <!-- Private -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__private_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__private"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__full_name_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__private_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__private_label_text_view"
+                        tools:text="@string/activity_details__private__hint" />
+
+                    <!-- Owner Id -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__owner_id_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__owner_id"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__private_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__owner_id_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__owner_id_label_text_view"
+                        tools:text="@string/activity_details__owner_id__hint" />
+
+                    <!-- Owner Login -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__owner_login_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__owner_login"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__owner_id_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__owner_login_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__owner_login_label_text_view"
+                        tools:text="@string/activity_details__owner_login__hint" />
+
+                    <!-- Stargazers Count -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__stargazers_count_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__stargazers_count"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__owner_login_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__stargazers_count_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__stargazers_count_label_text_view"
+                        tools:text="@string/activity_details__stargazers_count__hint" />
+
+                    <!-- Watchers Count -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__watchers_count_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__watchers_count"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__stargazers_count_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__watchers_count_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__watchers_count_label_text_view"
+                        tools:text="@string/activity_details__watchers_count__hint" />
+
+                    <!-- Forks -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__forks_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__forks"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__watchers_count_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__forks_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__forks_label_text_view"
+                        tools:text="@string/activity_details__forks__hint" />
+
+                    <!-- Open Issues -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__open_issues_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__open_issues"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__forks_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__open_issues_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__open_issues_label_text_view"
+                        tools:text="@string/activity_details__open_issues__hint" />
+
+                    <!-- Score -->
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__score_label_text_view"
+                        style="@style/Commit_H1_TextView"
+                        android:text="@string/activity_details__score"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__open_issues_text_view" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/id_activity_details__score_text_view"
+                        style="@style/Commit_H2_TextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/id_activity_details__score_label_text_view"
+                        tools:text="@string/activity_details__score__hint" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

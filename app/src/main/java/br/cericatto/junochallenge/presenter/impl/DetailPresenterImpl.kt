@@ -1,10 +1,10 @@
 package br.cericatto.junochallenge.presenter.impl
 
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.presenter.DetailPresenter
-import br.cericatto.junochallenge.presenter.api.ApiService
 import br.cericatto.junochallenge.view.activity.DetailActivity
-import br.cericatto.junochallenge.view.adapter.RepoDetailsAdapter
+import kotlinx.android.synthetic.main.activity_detail.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -16,84 +16,28 @@ import javax.inject.Inject
  */
 class DetailPresenterImpl @Inject constructor(private val mActivity: DetailActivity): DetailPresenter {
 
-    //--------------------------------------------------
-    // Attributes
-    //--------------------------------------------------
-
-    private lateinit var mAdapter: RepoDetailsAdapter
-    private var mData : MutableList<Repo> = mutableListOf()
-
-    //--------------------------------------------------
-    // Override Methods
-    //--------------------------------------------------
-
-    override fun getExtras(): String {
-//        val extras = mActivity.intent.extras
-//        if (extras != null) return extras.getString(AppConfiguration.REPO_NAME_EXTRA)
-        return ""
+    override fun getExtras(): Int {
+        val extras = mActivity.intent.extras
+        if (extras != null) return extras.getInt(AppConfiguration.REPO_ID_POSITION_EXTRA)
+        return 0
     }
 
-    override fun initDataSet(service : ApiService, userLogin: String, password: String, repoName: String) {
-        /*
-        val observable = service.getCommits(
-            userLogin.getHeaderAuthentication(password), userLogin, repoName)
-        val subscription = observable
-            .subscribeOn(Schedulers.io())
-            // Be notified on the main thread
-            .observeOn(AndroidSchedulers.mainThread())
-            .flatMapIterable { it.take(AppConfiguration.COMMITS_NUMBER) }
-            .subscribe(
-                {
-                    concatData(it)
-                    Timber.i("getCommits() -> $it")
-                },
-                {
-                    it.message?.let { errorMessage ->
-                        showErrorMessage(errorMessage)
-                        mActivity.showToast(mActivity.getString(R.string.activity_detail__authentication_error))
-                        mActivity.finish()
-                    }
-                },
-                // OnCompleted
-                {
-                    showData()
-                }
-            )
-        val composite = CompositeDisposable()
-        composite.add(subscription)
-        */
-    }
-
-    override fun showData() {
-        if (mData.isEmpty()) setEmptyTextView()
-        else setAdapter(mData)
+    override fun showData(repo: Repo) {
+        mActivity.id_activity_details__id_text_view.text = repo.id
+        mActivity.id_activity_details__node_id_text_view.text = repo.node_id
+        mActivity.id_activity_details__name_text_view.text = repo.name
+        mActivity.id_activity_details__full_name_text_view.text = repo.full_name
+        mActivity.id_activity_details__private_text_view.text = repo.private.toString()
+        mActivity.id_activity_details__owner_id_text_view.text = repo.owner.id
+        mActivity.id_activity_details__owner_login_text_view.text = repo.owner.login
+        mActivity.id_activity_details__stargazers_count_text_view.text = repo.stargazers_count.toString()
+        mActivity.id_activity_details__watchers_count_text_view.text = repo.watchers_count.toString()
+        mActivity.id_activity_details__forks_text_view.text = repo.forks.toString()
+        mActivity.id_activity_details__open_issues_text_view.text = repo.open_issues.toString()
+        mActivity.id_activity_details__score_text_view.text = repo.score.toString()
     }
 
     override fun showErrorMessage(error: String) {
         Timber.e(error)
-    }
-
-    //--------------------------------------------------
-    // Private Methods
-    //--------------------------------------------------
-
-    private fun concatData(data: Repo) {
-        mData.add(data)
-    }
-
-    private fun setAdapter(commits: List<Repo>) {
-//        mActivity.id_activity_detail__loading.visibility = View.GONE
-//        mActivity.id_activity_detail__recycler_view.visibility = View.VISIBLE
-//        mActivity.id_activity_detail__empty_text_view.visibility = View.GONE
-
-//        mAdapter = CommitAdapter(mActivity, commits)
-//        mActivity.id_activity_detail__recycler_view.adapter = mAdapter
-//        mActivity.id_activity_detail__recycler_view.layoutManager = LinearLayoutManager(mActivity)
-    }
-
-    private fun setEmptyTextView() {
-//        mActivity.id_activity_detail__loading.visibility = View.GONE
-//        mActivity.id_activity_detail__recycler_view.visibility = View.GONE
-//        mActivity.id_activity_detail__empty_text_view.visibility = View.VISIBLE
     }
 }

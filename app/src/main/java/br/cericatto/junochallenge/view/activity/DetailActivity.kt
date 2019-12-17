@@ -9,7 +9,6 @@ import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.presenter.NavigationUtils
 import br.cericatto.junochallenge.presenter.api.ApiService
 import br.cericatto.junochallenge.presenter.di.component.DaggerDetailComponent
-import br.cericatto.junochallenge.presenter.di.extensions.showToast
 import br.cericatto.junochallenge.presenter.di.module.DetailModule
 import br.cericatto.junochallenge.presenter.impl.DetailPresenterImpl
 import br.cericatto.junochallenge.view.activity.base.BaseActivity
@@ -64,9 +63,10 @@ class DetailActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val repoName = mPresenter.getExtras()
-        setCustomToolbar(true, repoName)
-        getData(repoName)
+        val repoPositionInList = mPresenter.getExtras()
+        val repo = MainApplication.repoList[repoPositionInList]
+        setCustomToolbar(true, repo.name)
+        mPresenter.showData(repo)
     }
 
     //--------------------------------------------------
@@ -85,18 +85,5 @@ class DetailActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    //--------------------------------------------------
-    // Methods
-    //--------------------------------------------------
-
-    private fun getData(repoName: String) {
-        val app: MainApplication = application as MainApplication
-//        if (checkIfHasNetwork()) mPresenter.initDataSet(mApiService, app.login, app.password, repoName)
-//        else {
-            showToast(R.string.no_internet)
-            finish()
-//        }
     }
 }
