@@ -9,7 +9,7 @@ import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
 import br.cericatto.junochallenge.view.activity.MainActivity
-import kotlinx.android.synthetic.main.item_repo.view.*
+import kotlinx.android.synthetic.main.item_repo_main.view.*
 import timber.log.Timber
 
 /**
@@ -27,7 +27,7 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
 
     private val mActivity = activity
     private val mPresenter = presenter
-    private var mRepoList: MutableList<Repo> = ArrayList()
+    private var mRepoList: MutableList<String> = ArrayList()
 
     //--------------------------------------------------
     // Adapter Methods
@@ -35,7 +35,7 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return RepoViewHolder(inflater.inflate(R.layout.item_repo, parent, false))
+        return RepoViewHolder(inflater.inflate(R.layout.item_repo_main, parent, false))
     }
 
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
@@ -51,7 +51,7 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
     // Callback
     //--------------------------------------------------
 
-    fun updateAdapter(list: List<Repo>) {
+    fun updateAdapter(list: List<String>) {
         val newList = mRepoList
         newList.addAll(list)
         mRepoList = newList
@@ -76,8 +76,8 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
         }
     }
 
-    private fun setTitle(view: View, repo: Repo) {
-        view.id_item_repo__title_text_view.text = repo.name
+    private fun setTitle(view: View, repoName: String) {
+        view.id_item_repo__title_text_view.text = repoName
         view.id_item_repo__title_text_view.setOnClickListener {
 //            mActivity.openActivityExtra(mActivity, DetailActivity::class.java,
 //                AppConfiguration.REPO_NAME_EXTRA, repo.name)

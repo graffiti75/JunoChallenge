@@ -2,7 +2,7 @@ package br.cericatto.junochallenge.presenter.di.module
 
 import br.cericatto.junochallenge.presenter.api.ApiService
 import br.cericatto.junochallenge.presenter.di.scope.PerActivity
-import br.cericatto.junochallenge.view.activity.MainActivity
+import br.cericatto.junochallenge.view.activity.DetailActivity
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -14,8 +14,7 @@ import retrofit2.Retrofit
  * @since December 14, 2019
  */
 @Module
-//class DetailModule(private val mActivity: DetailActivity) {
-class DetailModule(private val mActivity: MainActivity) {
+class DetailModule(private val mActivity: DetailActivity) {
     @Provides
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
@@ -23,8 +22,7 @@ class DetailModule(private val mActivity: MainActivity) {
 
     @PerActivity
     @Provides
-//    fun provideActivity(): DetailActivity {
-    fun provideActivity(): MainActivity {
+    fun provideActivity(): DetailActivity {
         return mActivity
     }
 }

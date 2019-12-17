@@ -37,7 +37,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
 
     private lateinit var mAdapter: RepoAdapter
     private lateinit var mService: ApiService
-    private lateinit var mRepos: List<Repo>
+    private lateinit var mRepos: List<String>
     private lateinit var mQuery: String
 
     //--------------------------------------------------
@@ -64,8 +64,12 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
             .subscribe(
                 {
                     val items = it?.items ?: emptyList()
+                    val itemsName : MutableList<String> = mutableListOf()
+                    items.forEach {
+                        itemsName.add(it.name)
+                    }
                     if (items.isNotEmpty()) {
-                        showData(items)
+                        showData(itemsName)
                         Timber.i("getRepos() -> $items")
                     } else {
                         app.loadedAllData = true
@@ -74,7 +78,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
                 {
                     it.message?.let { errorMessage ->
                         showErrorMessage(errorMessage)
-                        context.showToast(context.getString(R.string.activity_login__authentication_error))
+                        context.showToast(context.getString(R.string.retrofit_error))
                         backToLoginScreen(context)
                     }
                 },
@@ -87,7 +91,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         composite.add(subscription)
     }
 
-    override fun showData(repos: List<Repo>) {
+    override fun showData(repos: List<String>) {
         updateAdapter(repos)
         Timber.d(repos.toString())
     }
@@ -155,7 +159,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     // Private Methods
     //--------------------------------------------------
 
-    private fun updateAdapter(repos: List<Repo>) {
+    private fun updateAdapter(repos: List<String>) {
         mActivity.id_activity_main__loading.visibility = View.GONE
         mActivity.id_activity_main__recycler_view.visibility = View.VISIBLE
 

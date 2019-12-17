@@ -23,21 +23,31 @@
 
     <!-- Layout -->
 
-    <string name="item_commit__name_message__hint">Octopus Octocat</string>
-    <string name="item_commit__email_message__hint">octocat@macbook-pro.local</string>
-    <string name="item_commit__date_message__hint">2018-12-31T00:00:00Z</string>
-    <string name="item_commit__commit_message__hint">First commit.</string>
+    <string name="item_repo__id">Repo Id: </string>
+    <string name="item_repo__node_id">Repo Node Id:</string>
+    <string name="item_repo__name">Repo Name:</string>
+    <string name="item_repo__full_name">Repo Full Name:</string>
+    <string name="item_repo__private">Repo Private:</string>
+    <string name="item_repo__owner_id">Repo Owner Id:</string>
+    <string name="item_repo__owner_login">Repo Owner Login:</string>
+    <string name="item_repo__stargazers_count">Repo Stargazers Count:</string>
+    <string name="item_repo__watchers_count">Repo Watchers Count:</string>
+    <string name="item_repo__forks">Repo Forks:</string>
+    <string name="item_repo__open_issues">Repo Open Issues:</string>
+    <string name="item_repo__score">Repo Score:</string>
 
-    <string name="activity_camera__waiting">Waiting…</string>
-    <string name="activity_camera__opening_login">Please type your password:</string>
-    <string name="activity_camera__wrong_url">Please provide a valid Github User url.</string>
+    <string name="item_repo__id__hint">82128465</string>
+    <string name="item_repo__node_id__hint">MDEwOlJlcG9zaXRvcnk4MjEyODQ2NQ==</string>
+    <string name="item_repo__name__hint">Android</string>
+    <string name="item_repo__full_name__hint">open-android/Android</string>
+    <string name="item_repo__private__hint">false</string>
+    <string name="item_repo__owner_id__hint">23095877</string>
+    <string name="item_repo__owner_login__hint">open-android</string>
+    <string name="item_repo__stargazers_count__hint">8679</string>
+    <string name="item_repo__watchers_count__hint">8679</string>
+    <string name="item_repo__forks__hint">2525</string>
+    <string name="item_repo__open_issues__hint">21</string>
+    <string name="item_repo__score__hint">119.72391</string>
 
-    <string name="activity_login__info">Login: %1$s</string>
-    <string name="activity_login__button">Login</string>
-    <string name="activity_login__password">Password</string>
-    <string name="activity_login__password_hint">Please type your Github password</string>
-    <string name="activity_login__empty_password">Please type a valid password.</string>
-    <string name="activity_login__authentication_error">Login or Password incorrect. Please, try again.</string>
-
-    <string name="activity_detail__authentication_error">Repository could not be loaded.</string>
+    <string name="retrofit_error">Repository could not be loaded.</string>
 </resources>
