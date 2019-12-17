@@ -49,5 +49,6 @@
     <string name="activity_details__open_issues__hint">21</string>
     <string name="activity_details__score__hint">119.72391</string>
 
+    <string name="retrofit_empty_repos">There are no repos for the keyword \'%1$s\'.</string>
     <string name="retrofit_error">Repository could not be loaded.</string>
 </resources>

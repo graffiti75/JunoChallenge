@@ -62,7 +62,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    loadDataOnSuccess(it, app)
+                    loadDataOnSuccess(it, app, query)
                 },
                 {
                     it.message?.let { errorMessage ->
@@ -143,17 +143,23 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     // Private Methods
     //--------------------------------------------------
 
-    private fun loadDataOnSuccess(search: Search?, app: MainApplication) {
+    private fun loadDataOnSuccess(search: Search?, app: MainApplication, query: String) {
         val items = search?.items ?: emptyList()
-        MainApplication.repoList.addAll(items)
-        val itemsName : MutableList<String> = mutableListOf()
-        items.forEach {
-            itemsName.add(it.name)
-        }
         if (items.isNotEmpty()) {
+            MainApplication.repoList.addAll(items)
+            val itemsName : MutableList<String> = mutableListOf()
+            items.forEach {
+                itemsName.add(it.name)
+            }
+
             showData(itemsName)
             Timber.i("getRepos() -> $items")
         } else {
+            mActivity.id_activity_main__loading.visibility = View.GONE
+            mActivity.id_activity_main__default_text.visibility = View.VISIBLE
+
+            val text = mActivity.getString(R.string.retrofit_empty_repos, query)
+            mActivity.id_activity_main__default_text.text = text
             app.loadedAllData = true
         }
     }

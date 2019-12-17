@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.presenter.api.ApiService
@@ -13,6 +14,7 @@ import br.cericatto.junochallenge.presenter.di.extensions.showToast
 import br.cericatto.junochallenge.presenter.di.module.MainModule
 import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
 import br.cericatto.junochallenge.view.activity.base.BaseActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 /**
@@ -84,8 +86,11 @@ class MainActivity : BaseActivity() {
             mPresenter.initRecyclerView()
             mPresenter.initDataSet(this, mApiService, query)
         } else {
+            id_activity_main__loading.visibility = View.GONE
+            id_activity_main__recycler_view.visibility = View.GONE
+            id_activity_main__default_text.visibility = View.VISIBLE
+
             showToast(R.string.no_internet)
-            finish()
         }
     }
 }
