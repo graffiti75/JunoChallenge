@@ -9,10 +9,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
+import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.model.Search
 import br.cericatto.junochallenge.presenter.MainPresenter
 import br.cericatto.junochallenge.presenter.api.ApiService
-import br.cericatto.junochallenge.presenter.di.extensions.showToast
+import br.cericatto.junochallenge.presenter.extensions.setVisibilities
+import br.cericatto.junochallenge.presenter.extensions.showToast
 import br.cericatto.junochallenge.view.activity.MainActivity
 import br.cericatto.junochallenge.view.adapter.RepoAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,10 +36,13 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     // Attributes
     //--------------------------------------------------
 
+    companion object {
+        lateinit var mService: ApiService
+        lateinit var mQuery: String
+    }
+
     private lateinit var mAdapter: RepoAdapter
-    private lateinit var mService: ApiService
     private lateinit var mRepos: List<String>
-    private lateinit var mQuery: String
 
     //--------------------------------------------------
     // Override Methods
@@ -50,25 +55,20 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     }
 
     override fun initDataSet(context: MainActivity, service: ApiService, query: String) {
-        val app: MainApplication = context.application as MainApplication
-        val page = app.page
-        if (page == 1) {
+        if (MainApplication.page == 1) {
             mService = service
         }
 
-        val observable = service.getRepos(query = query)
+        val observable = service.getRepos(page = MainApplication.page, query = query)
         val subscription = observable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    loadDataOnSuccess(it, app, query)
+                    loadDataOnSuccess(it, query)
                 },
                 {
-                    it.message?.let { errorMessage ->
-                        showErrorMessage(errorMessage)
-                        context.showToast(context.getString(R.string.retrofit_error))
-                    }
+                    loadDataOnError(it, context)
                 },
                 {
                     Timber.i("getRepos() -> At OnCompleted.")
@@ -76,6 +76,11 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
             )
         val composite = CompositeDisposable()
         composite.add(subscription)
+    }
+
+    override fun restoreDataSet(context: MainActivity, repoList: MutableList<Repo>) {
+        val itemsName = getRepoFullNameList(repoList)
+        showData(itemsName)
     }
 
     override fun showData(repos: List<String>) {
@@ -98,28 +103,15 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
 
     override fun setSearchView(searchItem: MenuItem, searchManager: SearchManager): SearchView? {
         var searchView: SearchView? = null
-        if (searchItem != null) {
-            searchView = searchItem!!.actionView as SearchView
-        }
-        if (searchView != null) {
-            searchView?.setSearchableInfo(searchManager.getSearchableInfo(mActivity.componentName))
-        }
+        if (searchItem != null) searchView = searchItem!!.actionView as SearchView
+        if (searchView != null) searchView?.setSearchableInfo(searchManager.getSearchableInfo(mActivity.componentName))
         return searchView
     }
 
     override fun searchViewListener(searchView: SearchView?, searchItem: MenuItem) {
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                mActivity.id_activity_main__loading.visibility = View.VISIBLE
-                mActivity.id_activity_main__default_text.visibility = View.GONE
-
-                if (!searchView?.isIconified) {
-                    searchView?.isIconified = true
-                }
-                searchItem.collapseActionView()
-
-                mQuery = query
-                mActivity.getData(query)
+                onQueryTextSubmitAction(searchView, searchItem, query)
                 return false
             }
 
@@ -142,31 +134,57 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     // Private Methods
     //--------------------------------------------------
 
-    private fun loadDataOnSuccess(search: Search?, app: MainApplication, query: String) {
-        val items = search?.items ?: emptyList()
-        if (items.isNotEmpty()) {
-            MainApplication.repoList.addAll(items)
-            val itemsName : MutableList<String> = mutableListOf()
-            items.forEach {
-                itemsName.add(it.name)
-            }
+    private fun onQueryTextSubmitAction(searchView: SearchView?, searchItem: MenuItem, query: String) {
+        mActivity.setVisibilities(View.VISIBLE, View.GONE, View.GONE)
+        if (!searchView?.isIconified!!) {
+            searchView?.isIconified = true
+        }
+        searchItem.collapseActionView()
+        mQuery = query
+        mActivity.getData(query)
+    }
 
-            showData(itemsName)
-            Timber.i("getRepos() -> $items")
+    private fun loadDataOnSuccess(search: Search?, query: String) {
+        MainApplication.totalCount = search?.total_count!!
+        val repoList = search?.items
+        if (repoList.isNotEmpty()) {
+            dataIsNotEmpty(repoList)
         } else {
-            mActivity.id_activity_main__loading.visibility = View.GONE
-            mActivity.id_activity_main__default_text.visibility = View.VISIBLE
-
-            val text = mActivity.getString(R.string.retrofit_empty_repos, query)
-            mActivity.id_activity_main__default_text.text = text
-            app.loadedAllData = true
+            dataIsEmpty(query)
         }
     }
 
-    private fun updateAdapter(repos: List<String>) {
-        mActivity.id_activity_main__loading.visibility = View.GONE
-        mActivity.id_activity_main__recycler_view.visibility = View.VISIBLE
+    private fun loadDataOnError(error: Throwable, context: MainActivity) {
+        error.message?.let { errorMessage ->
+            showErrorMessage(errorMessage)
+            context.showToast(context.getString(R.string.retrofit_error))
+        }
+    }
 
+    private fun dataIsEmpty(query: String) {
+        mActivity.setVisibilities(View.GONE, View.GONE, View.VISIBLE)
+        val text = mActivity.getString(R.string.retrofit_empty_repos, query)
+        mActivity.id_activity_main__default_text.text = text
+        MainApplication.loadedAllData = true
+    }
+
+    private fun dataIsNotEmpty(repoList: List<Repo>) {
+        MainApplication.repoList.addAll(repoList)
+        val itemsName = getRepoFullNameList(repoList)
+        showData(itemsName)
+        Timber.i("getRepos() -> $repoList")
+    }
+
+    private fun getRepoFullNameList(repoList: List<Repo>): MutableList<String> {
+        val itemsName : MutableList<String> = mutableListOf()
+        repoList.forEach {
+            itemsName.add(it.full_name)
+        }
+        return itemsName
+    }
+
+    private fun updateAdapter(repos: List<String>) {
+        mActivity.setVisibilities(View.GONE, View.VISIBLE, View.GONE)
         mRepos = repos
         mAdapter.updateAdapter(repos)
     }

@@ -18,6 +18,7 @@ import br.cericatto.junochallenge.view.activity.MainActivity
 interface MainPresenter {
     fun initRecyclerView()
     fun initDataSet(context: MainActivity, service : ApiService, query: String)
+    fun restoreDataSet(context: MainActivity, repoList: MutableList<Repo>)
     fun showData(repos: List<String>)
     fun showErrorMessage(error: String)
 

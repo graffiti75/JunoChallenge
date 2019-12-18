@@ -3,18 +3,20 @@ package br.cericatto.junochallenge.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import br.cericatto.junochallenge.AppConfiguration
+import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
+import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.presenter.api.ApiService
 import br.cericatto.junochallenge.presenter.di.component.DaggerMainComponent
-import br.cericatto.junochallenge.presenter.di.extensions.checkIfHasNetwork
-import br.cericatto.junochallenge.presenter.di.extensions.showToast
 import br.cericatto.junochallenge.presenter.di.module.MainModule
+import br.cericatto.junochallenge.presenter.extensions.checkIfHasNetwork
+import br.cericatto.junochallenge.presenter.extensions.setVisibilities
+import br.cericatto.junochallenge.presenter.extensions.showToast
 import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
 import br.cericatto.junochallenge.view.activity.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import javax.inject.Inject
 
 /**
@@ -24,6 +26,14 @@ import javax.inject.Inject
  * @since December 14, 2019
  */
 class MainActivity : BaseActivity() {
+
+    //--------------------------------------------------
+    // Constants
+    //--------------------------------------------------
+
+    companion object {
+        const val LIST_SAVED_INSTANCE = "list_saved_instance"
+    }
 
     //--------------------------------------------------
     // Attributes
@@ -66,6 +76,13 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setCustomToolbar(false, getString(R.string.activity_main))
+        getSavedInstanceState(savedInstanceState)
+    }
+
+    public override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val json: String = Gson().toJson(MainApplication.repoList)
+        outState.putString(LIST_SAVED_INSTANCE, json)
     }
 
     //--------------------------------------------------
@@ -81,15 +98,27 @@ class MainActivity : BaseActivity() {
     // Methods
     //--------------------------------------------------
 
+    private fun getSavedInstanceState(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val json = savedInstanceState.getString(LIST_SAVED_INSTANCE)
+            val jsonType = object : TypeToken<MutableList<Repo>>(){}.type
+            var repoList: MutableList<Repo> = Gson().fromJson(json, jsonType)
+
+            if (repoList.isNotEmpty()) {
+                setVisibilities(View.GONE, View.VISIBLE, View.GONE)
+                MainApplication.repoList = repoList
+                mPresenter.initRecyclerView()
+                mPresenter.restoreDataSet(this, repoList)
+            } else setVisibilities(View.GONE, View.GONE, View.VISIBLE)
+        }
+    }
+
     fun getData(query: String) {
         if (checkIfHasNetwork()) {
             mPresenter.initRecyclerView()
             mPresenter.initDataSet(this, mApiService, query)
         } else {
-            id_activity_main__loading.visibility = View.GONE
-            id_activity_main__recycler_view.visibility = View.GONE
-            id_activity_main__default_text.visibility = View.VISIBLE
-
+            setVisibilities(View.GONE, View.GONE, View.VISIBLE)
             showToast(R.string.no_internet)
         }
     }

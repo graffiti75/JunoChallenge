@@ -1,5 +1,6 @@
 package br.cericatto.junochallenge.presenter.api
 
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.model.Search
 import br.cericatto.junochallenge.model.User
 import io.reactivex.Observable
@@ -17,8 +18,8 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("/search/repositories")
     fun getRepos(@Query("q") query: String = "android",
-         @Query("per_page") perPage: Int = 30,
-         @Query("page") page: Int = 1)
+                 @Query("per_page") perPage: Int = AppConfiguration.ITEMS_PER_PAGE,
+                 @Query("page") page: Int = AppConfiguration.FIRST_PAGE)
     : Observable<Search>
 
     @GET("users/{user}")

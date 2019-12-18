@@ -2,7 +2,7 @@ package br.cericatto.junochallenge.presenter.di.module
 
 import android.content.Context
 import br.cericatto.junochallenge.BuildConfig
-import br.cericatto.junochallenge.presenter.di.extensions.checkIfHasNetwork
+import br.cericatto.junochallenge.presenter.extensions.checkIfHasNetwork
 import dagger.Module
 import dagger.Provides
 import okhttp3.*

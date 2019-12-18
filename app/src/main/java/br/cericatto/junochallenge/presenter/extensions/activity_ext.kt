@@ -1,4 +1,4 @@
-package br.cericatto.junochallenge.presenter.di.extensions
+package br.cericatto.junochallenge.presenter.extensions
 
 import android.app.Activity
 import android.content.Context
@@ -7,8 +7,33 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import br.cericatto.junochallenge.presenter.NavigationUtils
+import kotlinx.android.synthetic.main.activity_main.*
+
+fun AppCompatActivity.setVisibilities(loading: Int, recycler: Int, defaultText: Int) {
+    this.id_activity_main__loading.visibility = loading
+    this.id_activity_main__recycler_view.visibility = recycler
+    this.id_activity_main__default_text.visibility = defaultText
+}
+
+fun View.setViewVisible() {
+    this.visibility = View.VISIBLE
+}
+
+fun View.isViewVisible(): Boolean {
+    return this.visibility == View.VISIBLE
+}
+
+fun View.setViewInvisible() {
+    this.visibility = View.INVISIBLE
+}
+
+fun View.setViewGone() {
+    this.visibility = View.GONE
+}
 
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()

@@ -18,10 +18,10 @@ import timber.log.Timber
 open class MainApplication : Application() {
     lateinit var applicationComponent: ApplicationComponent
 
-    var page: Int = 1
-    var loadedAllData: Boolean = false
-
     companion object {
+        var page: Int = 1
+        var totalCount = 0L
+        var loadedAllData: Boolean = false
         var repoList : MutableList<Repo> = mutableListOf()
     }
 

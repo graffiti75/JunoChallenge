@@ -23,18 +23,20 @@ class DetailPresenterImpl @Inject constructor(private val mActivity: DetailActiv
     }
 
     override fun showData(repo: Repo) {
-        mActivity.id_activity_details__id_text_view.text = repo.id
-        mActivity.id_activity_details__node_id_text_view.text = repo.node_id
-        mActivity.id_activity_details__name_text_view.text = repo.name
-        mActivity.id_activity_details__full_name_text_view.text = repo.full_name
-        mActivity.id_activity_details__private_text_view.text = repo.private.toString()
-        mActivity.id_activity_details__owner_id_text_view.text = repo.owner.id
-        mActivity.id_activity_details__owner_login_text_view.text = repo.owner.login
-        mActivity.id_activity_details__stargazers_count_text_view.text = repo.stargazers_count.toString()
-        mActivity.id_activity_details__watchers_count_text_view.text = repo.watchers_count.toString()
-        mActivity.id_activity_details__forks_text_view.text = repo.forks.toString()
-        mActivity.id_activity_details__open_issues_text_view.text = repo.open_issues.toString()
-        mActivity.id_activity_details__score_text_view.text = repo.score.toString()
+        with(repo) {
+            mActivity.id_activity_details__id_text_view.text = this.id
+            mActivity.id_activity_details__node_id_text_view.text = this.node_id
+            mActivity.id_activity_details__name_text_view.text = this.name
+            mActivity.id_activity_details__full_name_text_view.text = this.full_name
+            mActivity.id_activity_details__private_text_view.text = this.private.toString()
+            mActivity.id_activity_details__owner_id_text_view.text = this.owner.id
+            mActivity.id_activity_details__owner_login_text_view.text = this.owner.login
+            mActivity.id_activity_details__stargazers_count_text_view.text = this.stargazers_count.toString()
+            mActivity.id_activity_details__watchers_count_text_view.text = this.watchers_count.toString()
+            mActivity.id_activity_details__forks_text_view.text = this.forks.toString()
+            mActivity.id_activity_details__open_issues_text_view.text = this.open_issues.toString()
+            mActivity.id_activity_details__score_text_view.text = this.score.toString()
+        }
     }
 
     override fun showErrorMessage(error: String) {
