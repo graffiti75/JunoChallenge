@@ -70,7 +70,6 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
                         context.showToast(context.getString(R.string.retrofit_error))
                     }
                 },
-                // OnCompleted
                 {
                     Timber.i("getRepos() -> At OnCompleted.")
                 }

@@ -17,9 +17,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/id_activity_main__recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:itemCount="10"
             android:visibility="gone"
-            tools:itemCount="5"
             tools:listitem="@layout/item_repo" />
 
         <include
@@ -33,9 +34,10 @@
             android:id="@+id/id_activity_main__default_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="@string/activity_main_default_text"
             android:textSize="24sp"
-            android:gravity="center"
             android:visibility="visible" />
     </FrameLayout>
 </LinearLayout>

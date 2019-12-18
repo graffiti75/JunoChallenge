@@ -44,7 +44,7 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
         var repo = mRepoList[position]
         var view = holder.itemView
         setTitle(view, repo, position)
-        checkPagination(position)
+        checkPagination(holder, position)
     }
 
     override fun getItemCount(): Int = mRepoList.size
@@ -64,7 +64,7 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
     // Methods
     //--------------------------------------------------
 
-    private fun checkPagination(position: Int) {
+    private fun checkPagination(holder: RepoViewHolder, position: Int) {
         val shouldPaginate : Boolean = position == (mRepoList.size - 1)
         Timber.d("position: $position, itemCount - 1: ${mRepoList.size - 1}, shouldPaginate: $shouldPaginate")
 

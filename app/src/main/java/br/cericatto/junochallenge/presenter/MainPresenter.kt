@@ -3,6 +3,7 @@ package br.cericatto.junochallenge.presenter
 import android.app.SearchManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.presenter.api.ApiService
