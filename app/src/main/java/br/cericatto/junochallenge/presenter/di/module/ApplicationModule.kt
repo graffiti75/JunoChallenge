@@ -2,7 +2,6 @@ package br.cericatto.junochallenge.presenter.di.module
 
 import android.content.Context
 import br.cericatto.junochallenge.BuildConfig
-import br.cericatto.junochallenge.presenter.extensions.checkIfHasNetwork
 import dagger.Module
 import dagger.Provides
 import okhttp3.*
@@ -30,7 +29,6 @@ class ApplicationModule(private val mContext: Context, private val mBaseUrl: Str
 
     @Provides
     internal fun provideOkHttpClient(): OkHttpClient {
-//        val logging = HttpLoggingInterceptor()
         val logging = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
             override fun log(message: String) {
                 Timber.d(message)
@@ -43,7 +41,6 @@ class ApplicationModule(private val mContext: Context, private val mBaseUrl: Str
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(logging)
-//            .addInterceptor(provideOfflineCacheInterceptor())
             .addNetworkInterceptor(provideCacheInterceptor())
             .cache(provideCache())
             .build()
@@ -98,24 +95,6 @@ class ApplicationModule(private val mContext: Context, private val mBaseUrl: Str
                 return response.newBuilder()
                     .header("Cache-Control", cacheControl.toString())
                     .build()
-            }
-        }
-    }
-
-    private fun provideOfflineCacheInterceptor(): Interceptor {
-        return object : Interceptor {
-            @Throws(IOException::class)
-            override fun intercept(chain: Interceptor.Chain): Response {
-                var request = chain.request()
-                if (!mContext.checkIfHasNetwork()) {
-                    val cacheControl = CacheControl.Builder()
-                        .maxStale(1, TimeUnit.DAYS)
-                        .build()
-                    request = request.newBuilder()
-                        .cacheControl(cacheControl)
-                        .build()
-                }
-                return chain.proceed(request)
             }
         }
     }

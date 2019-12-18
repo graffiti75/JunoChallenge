@@ -22,7 +22,6 @@ open class MainApplication : Application() {
 
     companion object {
         lateinit var sharedPreferences: SharedPreferences
-
         var repoList : MutableList<Repo> = mutableListOf()
     }
 

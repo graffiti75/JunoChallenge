@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
-import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.model.Repo
@@ -70,18 +69,14 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         val observable = service.getRepos(page = context.getPage(), query = query)
         val subscription = observable
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(
                 {
                     loadDataOnSuccess(it, query)
                 },
                 {
                     loadDataOnError(it, context)
                 },
-                {
-                    Timber.i("getRepos() -> At OnCompleted.")
-                }
-            )
+                { Timber.i("getRepos() -> At OnCompleted.") })
         val composite = CompositeDisposable()
         composite.add(subscription)
     }
@@ -136,9 +131,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     //--------------------------------------------------
 
     fun initDataSet() {
-//        initDataSet(mActivity, mService, MainApplication.query)
         initDataSet(mActivity, mService, mActivity.getCachedQuery())
-        Timber.i("Query: $mActivity.getCachedQuery()")
     }
 
     //--------------------------------------------------
@@ -195,7 +188,6 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     }
 
     private fun dataIsEmpty(query: String) {
-        Timber.i("dataIsEmpty.")
         mActivity.setVisibilities(View.GONE, View.GONE, View.VISIBLE)
         val text = mActivity.getString(R.string.retrofit_empty_repos, query)
         mActivity.id_activity_main__default_text.text = text
@@ -205,7 +197,7 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         MainApplication.repoList.addAll(repoList)
         val itemsName = getRepoFullNameList(repoList)
         showData(itemsName)
-        Timber.i("getRepos() -> $repoList")
+        Timber.i("Repos: $repoList")
     }
 
     private fun getRepoFullNameList(repoList: List<Repo>): MutableList<String> {

@@ -52,7 +52,7 @@ class MainActivity : BaseActivity() {
     lateinit var mApiService: ApiService
 
     private lateinit var mRepoDao: RepoDao
-    private var mListState: Parcelable? = null
+    var mListState: Parcelable? = null
 
     //--------------------------------------------------
     // Base Activity
@@ -87,7 +87,6 @@ class MainActivity : BaseActivity() {
         setCustomToolbar(false, getString(R.string.activity_main))
         checkInstanceState(savedInstanceState)
         checkCachedData()
-        mListState = savedInstanceState?.getParcelable(LIST_POSITION_STATE)
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -107,10 +106,29 @@ class MainActivity : BaseActivity() {
     }
 
     //--------------------------------------------------
-    // Methods
+    // Public Methods
+    //--------------------------------------------------
+
+    fun getData(query: String) {
+        if (checkIfHasNetwork()) {
+            val totalCount = getTotalCount()
+            val firstExecution = totalCount < 0
+            val emptyResults = totalCount == 0
+            if (emptyResults) setVisibilities(View.GONE, View.GONE, View.VISIBLE)
+            else getNotEmptyData(firstExecution, query, totalCount)
+        } else {
+            updatePage(1)
+            setVisibilities(View.GONE, View.GONE, View.VISIBLE)
+            showToast(R.string.no_internet)
+        }
+    }
+
+    //--------------------------------------------------
+    // Private Methods
     //--------------------------------------------------
 
     private fun checkInstanceState(savedInstanceState: Bundle?) {
+        mListState = savedInstanceState?.getParcelable(LIST_POSITION_STATE)
         if (savedInstanceState != null) {
             val json = savedInstanceState.getString(LIST_SAVED_INSTANCE)
             val jsonType = object : TypeToken<MutableList<Repo>>(){}.type
@@ -139,38 +157,22 @@ class MainActivity : BaseActivity() {
         mPresenter.restoreDataSet(this, repoList)
     }
 
-    fun getData(query: String) {
-        if (checkIfHasNetwork()) {
-//            val reachedAllResults = MainApplication.totalCount < AppConfiguration.ITEMS_PER_PAGE * MainApplication.page
-            val totalCount = getTotalCount()
-            val firstExecution = totalCount < 0
-            if (totalCount == 0) {
-                setVisibilities(View.GONE, View.GONE, View.VISIBLE)
-            } else {
-                if (firstExecution) {
-                    mPresenter.initApiService(mApiService)
-                    mPresenter.initRecyclerView(mListState)
-                    mPresenter.initDataSet(this, mApiService, query)
-                    Timber.i("Query: $query")
-                } else {
-                    val page = getPage()
-                    val getDataFromCloud = totalCount < AppConfiguration.ITEMS_PER_PAGE * page
-                    val reachedAllResults = firstExecution || getDataFromCloud
-                    Timber.d("------------------------- totalCount: $totalCount")
-                    Timber.d("------------------------- page: $page")
-                    Timber.i("------------------------- reachedAllResults: $reachedAllResults")
-                    if (!reachedAllResults) {
-                        mPresenter.initApiService(mApiService)
-                        mPresenter.initRecyclerView(mListState)
-                        mPresenter.initDataSet(this, mApiService, query)
-                        Timber.i("Query: $query")
-                    }
-                }
-            }
+    private fun getNotEmptyData(firstExecution: Boolean, query: String, totalCount: Int) {
+        if (firstExecution) {
+            mPresenter.initApiService(mApiService)
+            mPresenter.initRecyclerView(mListState)
+            mPresenter.initDataSet(this, mApiService, query)
+            Timber.i("Query: $query")
         } else {
-            updatePage(1)
-            setVisibilities(View.GONE, View.GONE, View.VISIBLE)
-            showToast(R.string.no_internet)
+            val page = getPage()
+            val getDataFromCloud = totalCount < AppConfiguration.ITEMS_PER_PAGE * page
+            val reachedAllResults = firstExecution || getDataFromCloud
+            if (!reachedAllResults) {
+                mPresenter.initApiService(mApiService)
+                mPresenter.initRecyclerView(mListState)
+                mPresenter.initDataSet(this, mApiService, query)
+                Timber.i("Query: $query")
+            }
         }
     }
 }

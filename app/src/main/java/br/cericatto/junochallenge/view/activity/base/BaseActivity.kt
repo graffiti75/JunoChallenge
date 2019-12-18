@@ -46,11 +46,6 @@ abstract class BaseActivity : AppCompatActivity() {
     // Methods
     //--------------------------------------------------
 
-    fun setCustomToolbar(homeEnabled: Boolean) {
-        setSupportActionBar(id_toolbar as Toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(homeEnabled)
-    }
-
     fun setCustomToolbar(homeEnabled: Boolean, title: String) {
         setSupportActionBar(id_toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(homeEnabled)

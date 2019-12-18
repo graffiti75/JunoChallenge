@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.cericatto.junochallenge.AppConfiguration
-import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.presenter.extensions.getPage
 import br.cericatto.junochallenge.presenter.extensions.getTotalCount
@@ -15,7 +14,6 @@ import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
 import br.cericatto.junochallenge.view.activity.DetailActivity
 import br.cericatto.junochallenge.view.activity.MainActivity
 import kotlinx.android.synthetic.main.item_repo.view.*
-import timber.log.Timber
 
 /**
  * RepoAdapter.kt.
@@ -68,19 +66,19 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
     //--------------------------------------------------
 
     private fun checkPagination(position: Int) {
-        val shouldPaginate : Boolean = position == (mRepoList.size - 1)
-        Timber.d("position: $position, itemCount - 1: ${mRepoList.size - 1}, shouldPaginate: $shouldPaginate")
+        val callPagination = shouldCallPagination(position)
+        if (callPagination) {
+            mActivity.updatePage(mActivity.getPage() + 1)
+            mPresenter.initDataSet()
+        }
+    }
 
+    private fun shouldCallPagination(position: Int): Boolean {
+        val shouldPaginate : Boolean = position == (mRepoList.size - 1)
         val page = mActivity.getPage()
         val totalCount = mActivity.getTotalCount()
         val reachedAllResults = totalCount < AppConfiguration.ITEMS_PER_PAGE * page
-        val callPagination = shouldPaginate && !reachedAllResults
-        Timber.d("page: $page, totalCount: $totalCount, reachedAllResults: $reachedAllResults, callPagination: $callPagination")
-        if (callPagination) {
-            mActivity.updatePage(mActivity.getPage() + 1)
-            Timber.d("page: $page")
-            mPresenter.initDataSet()
-        }
+        return shouldPaginate && !reachedAllResults
     }
 
     private fun setTitle(view: View, repoName: String, position: Int) {
