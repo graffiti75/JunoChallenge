@@ -50,6 +50,28 @@ dependencies {
     implementation "com.google.dagger:dagger:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-compiler:$DAGGER_COMPILER_VERSION"
 
+    // LiveData.
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-rc02'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0-rc02'
+
+    // Room.
+    implementation 'androidx.room:room-runtime:2.2.1'
+    kapt 'androidx.room:room-compiler:2.2.1'
+
+    /*
+    // LiveData.
+    implementation "androidx.lifecycle:lifecycle-extensions:$ARCH_LIFECYCLE_VERSION"
+//    implementation "android.arch.lifecycle:extensions:${ANDROID_ARCH_VERSION}"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$ARCH_LIFECYCLE_VERSION"
+//    kapt "android.arch.lifecycle:compiler:${ANDROID_ARCH_VERSION}"
+
+    // Room.
+    implementation "androidx.room:room-runtime:$ROOM_VERSION"
+//    implementation "android.arch.persistence.room:runtime:${ANDROID_ARCH_VERSION}"
+    annotationProcessor "androidx.room:room-compiler:$ROOM_VERSION"
+//    kapt "android.arch.persistence.room:compiler:${ANDROID_ARCH_VERSION}"
+     */
+
     // RX.
     implementation "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
     implementation "io.reactivex.rxjava2:rxkotlin:$RX_KOTLIN_VERSION"

@@ -21,6 +21,12 @@ object AppConfiguration {
     const val TEST_GITHUB_USER = "octocat"
     const val TEST_PUBLIC_REPOS = 8
 
+    const val APP_PREFERENCES = "app_preferences"
+
+    const val PREFERENCE_QUERY_STRING = "pref_query_string"
+    const val PREFERENCE_TOTAL_COUNT = "pref_total_count"
+    const val PREFERENCE_PAGE = "pref_page"
+
     //----------------------------------------------
     // Extras
     //----------------------------------------------

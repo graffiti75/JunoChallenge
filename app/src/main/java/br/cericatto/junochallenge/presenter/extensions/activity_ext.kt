@@ -7,11 +7,52 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.presenter.NavigationUtils
 import kotlinx.android.synthetic.main.activity_main.*
+
+//--------------------------------------------------
+// Shared Preferences
+//--------------------------------------------------
+
+fun AppCompatActivity.getCachedQuery(): String {
+    val sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
+    return sharedPreferences.getString(AppConfiguration.PREFERENCE_QUERY_STRING, "").toString()
+}
+
+fun AppCompatActivity.updateCachedQuery(query: String): String {
+    val sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
+    sharedPreferences.edit().putString(AppConfiguration.PREFERENCE_QUERY_STRING, query).apply()
+    return sharedPreferences.getString(AppConfiguration.PREFERENCE_QUERY_STRING, "").toString()
+}
+
+fun AppCompatActivity.getTotalCount(): Int {
+    val sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
+    return sharedPreferences.getInt(AppConfiguration.PREFERENCE_TOTAL_COUNT, -1)
+}
+
+fun AppCompatActivity.updateTotalCount(count: Int): String {
+    val sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
+    sharedPreferences.edit().putInt(AppConfiguration.PREFERENCE_TOTAL_COUNT, count).apply()
+    return sharedPreferences.getInt(AppConfiguration.PREFERENCE_TOTAL_COUNT, -1).toString()
+}
+
+fun AppCompatActivity.getPage(): Int {
+    val sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
+    return sharedPreferences.getInt(AppConfiguration.PREFERENCE_PAGE, 1)
+}
+
+fun AppCompatActivity.updatePage(count: Int): String {
+    val sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
+    sharedPreferences.edit().putInt(AppConfiguration.PREFERENCE_PAGE, count).apply()
+    return sharedPreferences.getInt(AppConfiguration.PREFERENCE_PAGE, 1).toString()
+}
+
+//--------------------------------------------------
+// Visibilities
+//--------------------------------------------------
 
 fun AppCompatActivity.setVisibilities(loading: Int, recycler: Int, defaultText: Int) {
     this.id_activity_main__loading.visibility = loading
@@ -19,21 +60,9 @@ fun AppCompatActivity.setVisibilities(loading: Int, recycler: Int, defaultText: 
     this.id_activity_main__default_text.visibility = defaultText
 }
 
-fun View.setViewVisible() {
-    this.visibility = View.VISIBLE
-}
-
-fun View.isViewVisible(): Boolean {
-    return this.visibility == View.VISIBLE
-}
-
-fun View.setViewInvisible() {
-    this.visibility = View.INVISIBLE
-}
-
-fun View.setViewGone() {
-    this.visibility = View.GONE
-}
+//--------------------------------------------------
+// Toast
+//--------------------------------------------------
 
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
@@ -42,6 +71,10 @@ fun Context.showToast(message: String) {
 fun Context.showToast(message: Int) {
     Toast.makeText(this, this.getString(message), Toast.LENGTH_LONG).show()
 }
+
+//--------------------------------------------------
+// Connection
+//--------------------------------------------------
 
 @Suppress("DEPRECATION")
 fun Context.checkIfHasNetwork(): Boolean {
@@ -72,30 +105,13 @@ fun Context.checkIfHasNetwork(): Boolean {
     return result
 }
 
-fun Context.openActivity(activity: Activity, clazz: Class<*>) {
-    val intent = Intent(activity, clazz)
-    activity.startActivity(intent)
-    NavigationUtils.animate(activity, NavigationUtils.Animation.GO)
-}
+//--------------------------------------------------
+// Activity Transitions
+//--------------------------------------------------
 
 fun Context.openActivityExtra(activity: Activity, clazz: Class<*>, key: String, value: Any) {
     val intent = Intent(activity, clazz)
     val extras = getExtra(Bundle(), key, value)
-    intent.putExtras(extras)
-
-    activity.startActivity(intent)
-    NavigationUtils.animate(activity, NavigationUtils.Animation.GO)
-}
-
-fun Context.openActivityExtras(activity: Activity, clazz: Class<*>, keys: Array<String>, values: Array<Any>) {
-    val intent = Intent(activity, clazz)
-    var extras = Bundle()
-    val size = keys.size
-    for (i in 0 until size) {
-        val key = keys[i]
-        val value = values[i]
-        extras = getExtra(extras, key, value)
-    }
     intent.putExtras(extras)
 
     activity.startActivity(intent)

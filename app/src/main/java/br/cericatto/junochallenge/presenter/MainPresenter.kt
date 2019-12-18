@@ -1,6 +1,7 @@
 package br.cericatto.junochallenge.presenter
 
 import android.app.SearchManager
+import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,7 +17,9 @@ import br.cericatto.junochallenge.view.activity.MainActivity
  * @since December 14, 2019
  */
 interface MainPresenter {
-    fun initRecyclerView()
+    fun initApiService(service: ApiService)
+    fun initRecyclerView(state: Parcelable?)
+
     fun initDataSet(context: MainActivity, service : ApiService, query: String)
     fun restoreDataSet(context: MainActivity, repoList: MutableList<Repo>)
     fun showData(repos: List<String>)

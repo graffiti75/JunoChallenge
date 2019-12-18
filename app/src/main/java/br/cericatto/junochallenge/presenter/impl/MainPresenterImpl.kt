@@ -2,19 +2,23 @@ package br.cericatto.junochallenge.presenter.impl
 
 import android.app.SearchManager
 import android.content.Context
+import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
 import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.model.Search
+import br.cericatto.junochallenge.model.room.AppDatabase
+import br.cericatto.junochallenge.model.room.AppExecutors
+import br.cericatto.junochallenge.model.room.RepoDao
 import br.cericatto.junochallenge.presenter.MainPresenter
 import br.cericatto.junochallenge.presenter.api.ApiService
-import br.cericatto.junochallenge.presenter.extensions.setVisibilities
-import br.cericatto.junochallenge.presenter.extensions.showToast
+import br.cericatto.junochallenge.presenter.extensions.*
 import br.cericatto.junochallenge.view.activity.MainActivity
 import br.cericatto.junochallenge.view.adapter.RepoAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,22 +48,26 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     private lateinit var mAdapter: RepoAdapter
     private lateinit var mRepos: List<String>
 
+    private lateinit var mRepoDao: RepoDao
+
     //--------------------------------------------------
     // Override Methods
     //--------------------------------------------------
 
-    override fun initRecyclerView() {
+    override fun initApiService(service: ApiService) {
+        mService = service
+    }
+
+    override fun initRecyclerView(state: Parcelable?) {
         mAdapter = RepoAdapter(mActivity, this)
         mActivity.id_activity_main__recycler_view.adapter = mAdapter
-        mActivity.id_activity_main__recycler_view.layoutManager = LinearLayoutManager(mActivity)
+        var layoutManager = LinearLayoutManager(mActivity)
+        mActivity.id_activity_main__recycler_view.layoutManager = layoutManager
+        layoutManager.onRestoreInstanceState(state)
     }
 
     override fun initDataSet(context: MainActivity, service: ApiService, query: String) {
-        if (MainApplication.page == 1) {
-            mService = service
-        }
-
-        val observable = service.getRepos(page = MainApplication.page, query = query)
+        val observable = service.getRepos(page = context.getPage(), query = query)
         val subscription = observable
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -97,20 +105,21 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
         menuInflater.inflate(R.menu.dashboard, menu)
         val searchItem = menu.findItem(R.id.action_search)
         val searchManager = mActivity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        var searchView = setSearchView(searchItem, searchManager)
+        val searchView = setSearchView(searchItem, searchManager)
         searchViewListener(searchView, searchItem)
     }
 
     override fun setSearchView(searchItem: MenuItem, searchManager: SearchManager): SearchView? {
-        var searchView: SearchView? = null
-        if (searchItem != null) searchView = searchItem!!.actionView as SearchView
-        if (searchView != null) searchView?.setSearchableInfo(searchManager.getSearchableInfo(mActivity.componentName))
+        val searchView = searchItem.actionView as SearchView
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(mActivity.componentName))
         return searchView
     }
 
     override fun searchViewListener(searchView: SearchView?, searchItem: MenuItem) {
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                mActivity.updateCachedQuery(query)
+                deleteFromDatabase()
                 onQueryTextSubmitAction(searchView, searchItem, query)
                 return false
             }
@@ -127,7 +136,9 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     //--------------------------------------------------
 
     fun initDataSet() {
-        initDataSet(mActivity, mService, mQuery)
+//        initDataSet(mActivity, mService, MainApplication.query)
+        initDataSet(mActivity, mService, mActivity.getCachedQuery())
+        Timber.i("Query: $mActivity.getCachedQuery()")
     }
 
     //--------------------------------------------------
@@ -137,20 +148,42 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     private fun onQueryTextSubmitAction(searchView: SearchView?, searchItem: MenuItem, query: String) {
         mActivity.setVisibilities(View.VISIBLE, View.GONE, View.GONE)
         if (!searchView?.isIconified!!) {
-            searchView?.isIconified = true
+            searchView.isIconified = true
         }
         searchItem.collapseActionView()
         mQuery = query
+        mActivity.updatePage(1)
+        mActivity.updateTotalCount(-1)
+        mActivity.updateCachedQuery(query)
         mActivity.getData(query)
     }
 
     private fun loadDataOnSuccess(search: Search?, query: String) {
-        MainApplication.totalCount = search?.total_count!!
-        val repoList = search?.items
+        val count = search?.total_count!!.toInt()
+        mActivity.updateTotalCount(count)
+
+        val repoList = search.items
         if (repoList.isNotEmpty()) {
+            saveInDatabase(repoList)
             dataIsNotEmpty(repoList)
         } else {
+            deleteFromDatabase()
+            mActivity.updatePage(1)
             dataIsEmpty(query)
+        }
+    }
+
+    private fun saveInDatabase(repoList: MutableList<Repo>) {
+        mRepoDao = AppDatabase.getInstance(mActivity).repoDao()
+        AppExecutors.instance?.diskIO()?.execute {
+            mRepoDao.insertAll(repoList)
+        }
+    }
+
+    private fun deleteFromDatabase() {
+        mRepoDao = AppDatabase.getInstance(mActivity).repoDao()
+        AppExecutors.instance?.diskIO()?.execute {
+            mRepoDao.deleteAll()
         }
     }
 
@@ -162,10 +195,10 @@ class MainPresenterImpl @Inject constructor(private val mActivity: MainActivity)
     }
 
     private fun dataIsEmpty(query: String) {
+        Timber.i("dataIsEmpty.")
         mActivity.setVisibilities(View.GONE, View.GONE, View.VISIBLE)
         val text = mActivity.getString(R.string.retrofit_empty_repos, query)
         mActivity.id_activity_main__default_text.text = text
-        MainApplication.loadedAllData = true
     }
 
     private fun dataIsNotEmpty(repoList: List<Repo>) {

@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import br.cericatto.junochallenge.AppConfiguration
 import br.cericatto.junochallenge.MainApplication
 import br.cericatto.junochallenge.R
+import br.cericatto.junochallenge.presenter.extensions.getPage
+import br.cericatto.junochallenge.presenter.extensions.getTotalCount
 import br.cericatto.junochallenge.presenter.extensions.openActivityExtra
+import br.cericatto.junochallenge.presenter.extensions.updatePage
 import br.cericatto.junochallenge.presenter.impl.MainPresenterImpl
 import br.cericatto.junochallenge.view.activity.DetailActivity
 import br.cericatto.junochallenge.view.activity.MainActivity
@@ -68,11 +71,14 @@ class RepoAdapter(activity: MainActivity, presenter : MainPresenterImpl)
         val shouldPaginate : Boolean = position == (mRepoList.size - 1)
         Timber.d("position: $position, itemCount - 1: ${mRepoList.size - 1}, shouldPaginate: $shouldPaginate")
 
-        val loadedAllData = MainApplication.loadedAllData
-        val reachedAllResults = MainApplication.totalCount < AppConfiguration.ITEMS_PER_PAGE * MainApplication.page
-        if (!loadedAllData && shouldPaginate && !reachedAllResults) {
-            MainApplication.page++
-            Timber.d("page: $MainApplication.page")
+        val page = mActivity.getPage()
+        val totalCount = mActivity.getTotalCount()
+        val reachedAllResults = totalCount < AppConfiguration.ITEMS_PER_PAGE * page
+        val callPagination = shouldPaginate && !reachedAllResults
+        Timber.d("page: $page, totalCount: $totalCount, reachedAllResults: $reachedAllResults, callPagination: $callPagination")
+        if (callPagination) {
+            mActivity.updatePage(mActivity.getPage() + 1)
+            Timber.d("page: $page")
             mPresenter.initDataSet()
         }
     }

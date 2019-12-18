@@ -28,7 +28,7 @@
             layout="@layout/loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/id_activity_main__default_text"
@@ -36,8 +36,9 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="10dp"
+            android:typeface="monospace"
             android:text="@string/activity_main_default_text"
             android:textSize="24sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

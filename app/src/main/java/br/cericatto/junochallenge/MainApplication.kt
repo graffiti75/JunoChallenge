@@ -1,6 +1,8 @@
 package br.cericatto.junochallenge
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import br.cericatto.junochallenge.model.Repo
 import br.cericatto.junochallenge.presenter.di.component.ApplicationComponent
 import br.cericatto.junochallenge.presenter.di.component.DaggerApplicationComponent
@@ -19,9 +21,8 @@ open class MainApplication : Application() {
     lateinit var applicationComponent: ApplicationComponent
 
     companion object {
-        var page: Int = 1
-        var totalCount = 0L
-        var loadedAllData: Boolean = false
+        lateinit var sharedPreferences: SharedPreferences
+
         var repoList : MutableList<Repo> = mutableListOf()
     }
 
@@ -29,6 +30,7 @@ open class MainApplication : Application() {
         super.onCreate()
         initTimber()
         initializeApplicationComponent()
+        sharedPreferences = getSharedPreferences(AppConfiguration.APP_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     private fun initTimber() {
